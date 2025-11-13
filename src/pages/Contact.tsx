@@ -96,9 +96,9 @@ const Contact = () => {
                       Address
                     </h3>
                     <p className="text-medium-gray">
-                      House- 5, Road- 2, Block- A, Banasree, Rampura,
+                      Rowshan Tower, Level 8, House 2, Road 5, Block C,
                       <br />
-                      Dhaka-1219
+                      Nobodoy Housing, Mohammadpur, Dhaka-1207
                     </p>
                   </div>
                 </div>
