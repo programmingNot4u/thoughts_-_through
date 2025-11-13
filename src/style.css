@@ -32,4 +32,25 @@
   .card-hover {
     @apply transition-all duration-300 hover:scale-105 hover:shadow-lg;
   }
+
+  /* Article content styling */
+  .prose {
+    @apply text-dark-gray;
+  }
+
+  .prose h3 {
+    @apply text-2xl font-heading font-bold text-dark-gray mb-3 mt-6;
+  }
+
+  .prose p {
+    @apply mb-4 leading-relaxed;
+  }
+
+  .prose ul {
+    @apply list-disc list-inside space-y-2 mb-4 text-medium-gray;
+  }
+
+  .prose li {
+    @apply mb-2;
+  }
 }

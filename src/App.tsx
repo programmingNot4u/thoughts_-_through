@@ -9,10 +9,15 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import Media from "./pages/Media";
+import MediaCoverageDetails from "./pages/MediaCoverageDetails";
+import MediaCoverageList from "./pages/MediaCoverageList";
 import Projects from "./pages/Projects";
 import PublicationsPage from "./pages/Publications";
+import RelevantLinksList from "./pages/RelevantLinksList";
 import ResearchAreas from "./pages/ResearchAreas";
 import ResourcePanelPage from "./pages/ResourcePanel";
+import WebinarDetails from "./pages/WebinarDetails";
+import Webinars from "./pages/Webinars";
 
 function App() {
   useEffect(() => {
@@ -34,6 +39,11 @@ function App() {
         <Route path="/resource-panel" element={<ResourcePanelPage />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/media" element={<Media />} />
+        <Route path="/media-coverage" element={<MediaCoverageList />} />
+        <Route path="/media-coverage/:id" element={<MediaCoverageDetails />} />
+        <Route path="/webinars" element={<Webinars />} />
+        <Route path="/webinars/:id" element={<WebinarDetails />} />
+        <Route path="/relevant-links" element={<RelevantLinksList />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />

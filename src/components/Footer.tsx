@@ -145,9 +145,9 @@ const Footer = () => {
                   />
                 </svg>
                 <a
-                  href="mailto:info@thoughtsandthorough.org"
+                  href="mailto:info@ttrbd.org"
                   className="hover:text-white transition-colors">
-                  info@thoughtsandthorough.org
+                  info@ttrbd.org
                 </a>
               </li>
               <li className="flex items-start">
@@ -164,9 +164,9 @@ const Footer = () => {
                   />
                 </svg>
                 <a
-                  href="tel:+1234567890"
+                  href="tel:+8801711123456"
                   className="hover:text-white transition-colors">
-                  +1 (234) 567-890
+                  +880 1711-123456
                 </a>
               </li>
               <li className="flex items-start">
@@ -189,9 +189,9 @@ const Footer = () => {
                   />
                 </svg>
                 <span className="hover:text-white transition-colors">
-                  123 Research Avenue
+                  House- 5, Road- 2, Block- A, Banasree, Rampura,
                   <br />
-                  Science District, City 12345
+                  Dhaka-1219
                 </span>
               </li>
             </ul>

@@ -1,28 +1,36 @@
+import chairmanPhoto from "../assets/images/chairman.jpg";
+import mdPhoto from "../assets/images/md.jpg";
+import rashedaPhoto from "../assets/images/Rasheda_Begum _Director.jpg";
+
 const BoardDirectors = () => {
   const directors = [
     {
-      name: "Dr. Patricia Williams",
+      name: "Ishrat Jahan Dilruba",
       designation: "Chairman",
-      bio: "Leading expert in public health research with over 25 years of experience in evidence-based policy development.",
-      photo: "👩‍💼",
+      bio: "Leading the organization with strategic vision and commitment to excellence in research and consultancy services.",
+      photo: chairmanPhoto,
+      hasImage: true,
     },
     {
-      name: "Dr. David Martinez",
-      designation: "Vice Chairman",
-      bio: "Renowned environmental scientist specializing in climate change impacts and sustainable development strategies.",
+      name: "Md Taufikuzzaman",
+      designation: "Managing Director",
+      bio: "Overseeing day-to-day operations and driving organizational growth through innovative research methodologies and strategic partnerships.",
+      photo: mdPhoto,
+      hasImage: true,
+    },
+    {
+      name: "Kazi Mohammad Azizul Islam",
+      designation: "Director",
+      bio: "Contributing expertise in research development and strategic planning to advance the organization's mission and objectives.",
       photo: "👨‍💼",
+      hasImage: false,
     },
     {
-      name: "Dr. Jennifer Lee",
-      designation: "Director of Research",
-      bio: "Expert in social health research and data analytics, with a focus on inequality and community well-being.",
-      photo: "👩‍🔬",
-    },
-    {
-      name: "Dr. Thomas Brown",
-      designation: "Director of Operations",
-      bio: "Strategic consultant with extensive experience in research project management and organizational development.",
-      photo: "👨‍💼",
+      name: "Rasheda Begum",
+      designation: "Director",
+      bio: "Providing strategic guidance and oversight to ensure the organization's continued success and impact in research and consultancy.",
+      photo: rashedaPhoto,
+      hasImage: true,
     },
   ];
 
@@ -42,10 +50,20 @@ const BoardDirectors = () => {
               data-aos="fade-up"
               data-aos-delay={index * 100}>
               <div className="flex items-start space-x-6">
-                <div className="w-20 h-20 rounded-full bg-forest-green flex items-center justify-center text-3xl flex-shrink-0">
-                  {director.photo}
-                </div>
-                <div>
+                {director.hasImage ? (
+                  <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 border-2 border-forest-green">
+                    <img
+                      src={director.photo}
+                      alt={director.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-forest-green flex items-center justify-center text-3xl flex-shrink-0">
+                    {director.photo}
+                  </div>
+                )}
+                <div className="flex-1">
                   <h3 className="text-2xl font-heading font-bold text-dark-gray mb-2">
                     {director.name}
                   </h3>
@@ -70,7 +88,7 @@ const BoardDirectors = () => {
             {/* Top Level - Chairman */}
             <div className="mb-8">
               <div className="bg-forest-green text-white px-6 py-3 rounded-lg font-heading font-bold">
-                Chairman & MD
+                Chairman
               </div>
             </div>
 
@@ -78,36 +96,20 @@ const BoardDirectors = () => {
             <div className="w-1 h-8 bg-forest-green mb-8"></div>
 
             {/* Second Level */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 w-full max-w-4xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 w-full max-w-5xl">
               <div className="text-center">
                 <div className="bg-light-green border-2 border-forest-green px-4 py-2 rounded-lg font-heading font-semibold mb-4">
-                  Vice Chairman
-                </div>
-                <div className="w-1 h-6 bg-forest-green mx-auto mb-4"></div>
-                <div className="space-y-2">
-                  <div className="bg-white border border-forest-green px-3 py-2 rounded text-sm">
-                    Research Division
-                  </div>
-                  <div className="bg-white border border-forest-green px-3 py-2 rounded text-sm">
-                    Operations Division
-                  </div>
+                  Managing Director
                 </div>
               </div>
               <div className="text-center">
                 <div className="bg-light-green border-2 border-forest-green px-4 py-2 rounded-lg font-heading font-semibold mb-4">
-                  Director of Research
+                  Director
                 </div>
-                <div className="w-1 h-6 bg-forest-green mx-auto mb-4"></div>
-                <div className="space-y-2">
-                  <div className="bg-white border border-forest-green px-3 py-2 rounded text-sm">
-                    Health Research
-                  </div>
-                  <div className="bg-white border border-forest-green px-3 py-2 rounded text-sm">
-                    Environmental Research
-                  </div>
-                  <div className="bg-white border border-forest-green px-3 py-2 rounded text-sm">
-                    Social Research
-                  </div>
+              </div>
+              <div className="text-center">
+                <div className="bg-light-green border-2 border-forest-green px-4 py-2 rounded-lg font-heading font-semibold mb-4">
+                  Director
                 </div>
               </div>
             </div>

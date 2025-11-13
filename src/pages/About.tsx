@@ -4,11 +4,11 @@ import VisionMission from "../components/VisionMission";
 
 const About = () => {
   return (
-    <>
+    <div className="pt-20">
       <VisionMission />
       <ChairmanIntro />
       <BoardDirectors />
-    </>
+    </div>
   );
 };
 

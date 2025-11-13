@@ -1,27 +1,22 @@
+import chairmanPhoto from "../assets/images/chairman.jpg";
+
 const ChairmanIntro = () => {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl md:text-5xl font-heading font-bold text-dark-gray text-center mb-16">
-          Introduction by Chairman & MD
+          Introduction by Chairman
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Portrait */}
           <div className="flex justify-center" data-aos="fade-right">
             <div className="relative">
               <div className="w-64 h-64 rounded-full bg-light-green border-4 border-forest-green overflow-hidden shadow-lg">
-                <div className="w-full h-full bg-gradient-to-br from-forest-green to-deep-green flex items-center justify-center">
-                  <svg
-                    className="w-32 h-32 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
+                <img
+                  src={chairmanPhoto}
+                  alt="Ishrat Jahan Dilruba - Chairman"
+                  className="w-full h-full object-cover"
+                />
               </div>
               {/* Quote Icon Background */}
               <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-forest-green/20 rounded-full flex items-center justify-center">
@@ -63,8 +58,9 @@ const ChairmanIntro = () => {
             </div>
             <div className="pt-4">
               <p className="text-forest-green font-heading font-bold text-xl mb-2">
-                Chairman & Managing Director
+                Ishrat Jahan Dilruba
               </p>
+              <p className="text-medium-gray font-semibold mb-1">Chairman</p>
               <p
                 className="text-medium-gray italic"
                 style={{ fontFamily: "cursive" }}>

@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const location = useLocation();
 
+  // Scroll to top on route change
+  useEffect(() => {
+    // Scroll to top immediately when route changes
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  // Show/hide scroll to top button
   useEffect(() => {
     const toggleVisibility = () => {
       if (window.scrollY > 300) {

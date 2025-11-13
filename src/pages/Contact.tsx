@@ -40,9 +40,9 @@ const Contact = () => {
                       Email
                     </h3>
                     <a
-                      href="mailto:info@thoughtsandthorough.org"
+                      href="mailto:info@ttrbd.org"
                       className="text-forest-green hover:text-deep-green transition-colors">
-                      info@thoughtsandthorough.org
+                      info@ttrbd.org
                     </a>
                   </div>
                 </div>
@@ -65,9 +65,9 @@ const Contact = () => {
                       Phone
                     </h3>
                     <a
-                      href="tel:+1234567890"
+                      href="tel:+8801711123456"
                       className="text-forest-green hover:text-deep-green transition-colors">
-                      +1 (234) 567-890
+                      +880 1711-123456
                     </a>
                   </div>
                 </div>
@@ -96,9 +96,9 @@ const Contact = () => {
                       Address
                     </h3>
                     <p className="text-medium-gray">
-                      123 Research Avenue
+                      House- 5, Road- 2, Block- A, Banasree, Rampura,
                       <br />
-                      Science District, City 12345
+                      Dhaka-1219
                     </p>
                   </div>
                 </div>
