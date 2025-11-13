@@ -145,9 +145,9 @@ const Footer = () => {
                   />
                 </svg>
                 <a
-                  href="mailto:info@ttrbd.org"
+                  href="mailto:taufikuzzamanbd@gmail.com"
                   className="hover:text-white transition-colors">
-                  info@ttrbd.org
+                  taufikuzzamanbd@gmail.com
                 </a>
               </li>
               <li className="flex items-start">
@@ -166,7 +166,7 @@ const Footer = () => {
                 <a
                   href="tel:+8801711123456"
                   className="hover:text-white transition-colors">
-                  +880 1711-123456
+                  1711006554
                 </a>
               </li>
               <li className="flex items-start">
