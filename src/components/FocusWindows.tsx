@@ -1,9 +1,12 @@
+import { Link } from "react-router-dom";
+
 const FocusWindows = () => {
   const focusAreas = [
     {
       title: "Health, Mental Health & Social Health",
       description:
         "Comprehensive research on physical, mental, and social well-being to inform evidence-based health policies and interventions.",
+      link: "/research/health",
       icon: (
         <svg
           className="w-12 h-12 text-forest-green"
@@ -23,6 +26,7 @@ const FocusWindows = () => {
       title: "Climate Change Impacts on Health & Livelihood",
       description:
         "Analyzing the intersection of environmental change and human well-being to develop resilient communities and sustainable solutions.",
+      link: "/research/climate",
       icon: (
         <svg
           className="w-12 h-12 text-forest-green"
@@ -39,9 +43,10 @@ const FocusWindows = () => {
       ),
     },
     {
-      title: "Social & Familial Impacts of Inequality",
+      title: "Social, familial and individual impact of economic stress and inequality",
       description:
         "Investigating how economic and social disparities affect families and communities, with a focus on creating equitable pathways forward.",
+      link: "/research/social",
       icon: (
         <svg
           className="w-12 h-12 text-forest-green"
@@ -64,19 +69,33 @@ const FocusWindows = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {focusAreas.map((area, index) => (
-            <div
+            <Link
               key={index}
-              className="bg-white border-2 border-forest-green rounded-lg p-8 card-hover"
-              data-aos="fade-up"
-              data-aos-delay={index * 100}>
+              to={area.link}
+              className="bg-white border-2 border-forest-green rounded-lg p-8 card-hover block cursor-pointer">
               <div className="mb-6">{area.icon}</div>
               <h3 className="text-2xl font-heading font-bold text-dark-gray mb-4">
                 {area.title}
               </h3>
-              <p className="text-medium-gray leading-relaxed">
+              <p className="text-medium-gray leading-relaxed mb-4">
                 {area.description}
               </p>
-            </div>
+              <div className="flex items-center text-forest-green font-medium mt-4">
+                <span>Explore Research</span>
+                <svg
+                  className="w-5 h-5 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

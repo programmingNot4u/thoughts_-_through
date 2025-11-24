@@ -27,11 +27,6 @@ const Hero = () => {
             <Link to="/research-areas" className="btn-primary">
               View Our Research
             </Link>
-            <Link
-              to="/projects"
-              className="btn-outline bg-white/10 border-white text-white hover:bg-white hover:text-forest-green">
-              Explore Ongoing Projects
-            </Link>
           </div>
         </div>
       </div>

@@ -11,11 +11,18 @@ import Home from "./pages/Home";
 import Media from "./pages/Media";
 import MediaCoverageDetails from "./pages/MediaCoverageDetails";
 import MediaCoverageList from "./pages/MediaCoverageList";
-import Projects from "./pages/Projects";
 import PublicationsPage from "./pages/Publications";
 import RelevantLinksList from "./pages/RelevantLinksList";
 import ResearchAreas from "./pages/ResearchAreas";
+import ResearchClimateDetails from "./pages/ResearchClimateDetails";
+import ResearchClimateList from "./pages/ResearchClimateList";
+import ResearchHealthDetails from "./pages/ResearchHealthDetails";
+import ResearchHealthList from "./pages/ResearchHealthList";
+import ResearchInequalityDetails from "./pages/ResearchInequalityDetails";
+import ResearchInequalityList from "./pages/ResearchInequalityList";
 import ResourcePanelPage from "./pages/ResourcePanel";
+import SurveyDetails from "./pages/SurveyDetails";
+import Surveys from "./pages/Surveys";
 import WebinarDetails from "./pages/WebinarDetails";
 import Webinars from "./pages/Webinars";
 
@@ -35,9 +42,16 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/research-areas" element={<ResearchAreas />} />
+        <Route path="/surveys" element={<Surveys />} />
+        <Route path="/surveys/:id" element={<SurveyDetails />} />
+        <Route path="/research/health" element={<ResearchHealthList />} />
+        <Route path="/research/health/:id" element={<ResearchHealthDetails />} />
+        <Route path="/research/climate" element={<ResearchClimateList />} />
+        <Route path="/research/climate/:id" element={<ResearchClimateDetails />} />
+        <Route path="/research/social" element={<ResearchInequalityList />} />
+        <Route path="/research/social/:id" element={<ResearchInequalityDetails />} />
         <Route path="/publications" element={<PublicationsPage />} />
         <Route path="/resource-panel" element={<ResourcePanelPage />} />
-        <Route path="/projects" element={<Projects />} />
         <Route path="/media" element={<Media />} />
         <Route path="/media-coverage" element={<MediaCoverageList />} />
         <Route path="/media-coverage/:id" element={<MediaCoverageDetails />} />

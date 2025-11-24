@@ -36,6 +36,9 @@
   /* Article content styling */
   .prose {
     @apply text-dark-gray;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .prose h3 {
@@ -44,6 +47,8 @@
 
   .prose p {
     @apply mb-4 leading-relaxed;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .prose ul {
@@ -52,5 +57,37 @@
 
   .prose li {
     @apply mb-2;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Prevent overflow in prose content */
+  .prose img,
+  .prose video,
+  .prose iframe,
+  .prose embed,
+  .prose object {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .prose table {
+    width: 100% !important;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .prose pre,
+  .prose code {
+    overflow-x: auto;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+  }
+
+  .prose blockquote {
+    max-width: 100%;
+    word-wrap: break-word;
   }
 }

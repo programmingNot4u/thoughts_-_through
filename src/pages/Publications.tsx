@@ -1,11 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LegalDocuments from "../components/LegalDocuments";
 import Publications from "../components/Publications";
+import { publicationService, type PublicationStatistics } from "../services/publicationService";
 
 const PublicationsPage = () => {
   const [activeTab, setActiveTab] = useState<"publications" | "documents">(
     "publications"
   );
+  const [statistics, setStatistics] = useState<PublicationStatistics | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        setLoading(true);
+        const data = await publicationService.getStatistics();
+        setStatistics(data);
+      } catch (error) {
+        console.error("Error fetching publication statistics:", error);
+        // Set default values on error
+        setStatistics({
+          publications_count: 0,
+          legal_documents_count: 0,
+          research_sectors_count: 0,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStatistics();
+  }, []);
 
   return (
     <div className="pt-20">
@@ -20,20 +44,35 @@ const PublicationsPage = () => {
               Access our comprehensive collection of research publications,
               reports, policy briefs, and legal documents
             </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm">
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
-                <div className="font-bold text-lg">10+</div>
-                <div className="text-white/80">Research Publications</div>
+            {loading ? (
+              <div className="flex flex-wrap justify-center gap-4 text-sm">
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                  <div className="font-bold text-lg">...</div>
+                  <div className="text-white/80">Loading...</div>
+                </div>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
-                <div className="font-bold text-lg">6+</div>
-                <div className="text-white/80">Legal Documents</div>
+            ) : (
+              <div className="flex flex-wrap justify-center gap-4 text-sm">
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                  <div className="font-bold text-lg">
+                    {statistics?.publications_count || 0}+
+                  </div>
+                  <div className="text-white/80">Research Publications</div>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                  <div className="font-bold text-lg">
+                    {statistics?.legal_documents_count || 0}+
+                  </div>
+                  <div className="text-white/80">Legal Documents</div>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
+                  <div className="font-bold text-lg">
+                    {statistics?.research_sectors_count || 0}+
+                  </div>
+                  <div className="text-white/80">Research Sectors</div>
+                </div>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3">
-                <div className="font-bold text-lg">5+</div>
-                <div className="text-white/80">Research Sectors</div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>

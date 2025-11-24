@@ -1,0 +1,239 @@
+/* Custom Admin Styling for Thoughts & Thorough */
+
+/* Improve overall admin appearance */
+#header {
+    background: linear-gradient(135deg, #1C7C54 0%, #11543A 100%);
+    color: #fff;
+}
+
+#header a:link, #header a:visited {
+    color: #fff;
+}
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: #fff;
+    font-weight: 700;
+}
+
+/* Modernize form fields */
+.form-row {
+    margin-bottom: 15px;
+}
+
+input[type="text"], input[type="email"], input[type="url"], 
+input[type="number"], textarea, select {
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+    transition: all 0.2s;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, 
+input[type="url"]:focus, input[type="number"]:focus, 
+textarea:focus, select:focus {
+    border-color: #1C7C54;
+    box-shadow: 0 0 0 3px rgba(28, 124, 84, 0.1);
+    outline: none;
+}
+
+/* Modernize buttons */
+.button, input[type="submit"], .submit-row input {
+    background: #1C7C54;
+    border-radius: 6px;
+    padding: 10px 20px;
+    border: none;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.button:hover, input[type="submit"]:hover, .submit-row input:hover {
+    background: #11543A;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button.default, input[type="submit"].default, .submit-row input.default {
+    background: #1C7C54;
+}
+
+/* Improve list views */
+#result_list {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#result_list thead th {
+    background: #f9fafb;
+    font-weight: 600;
+    padding: 12px;
+}
+
+#result_list tbody tr {
+    transition: background-color 0.2s;
+}
+
+#result_list tbody tr:hover {
+    background-color: #f3f4f6;
+}
+
+/* Modernize filters */
+#changelist-filter {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+#changelist-filter h3 {
+    color: #1C7C54;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* Improve fieldsets */
+fieldset {
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: #fff;
+}
+
+fieldset legend {
+    color: #1C7C54;
+    font-weight: 600;
+    padding: 0 10px;
+}
+
+/* Modernize inlines */
+.inline-group {
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Improve search */
+#searchbar {
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+}
+
+/* Badge improvements */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Improve pagination */
+.paginator {
+    margin: 20px 0;
+}
+
+.paginator a {
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 0 2px;
+    transition: all 0.2s;
+}
+
+.paginator a:hover {
+    background: #1C7C54;
+    color: #fff;
+}
+
+/* Modernize messages */
+.messagelist li {
+    border-radius: 6px;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+}
+
+/* Improve object tools */
+.object-tools {
+    margin-bottom: 20px;
+}
+
+.object-tools a {
+    background: #1C7C54;
+    border-radius: 6px;
+    padding: 10px 15px;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.object-tools a:hover {
+    background: #11543A;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Improve dashboard */
+.dashboard .module table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Modernize changelist */
+.changelist-actions {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Improve readonly fields */
+.readonly {
+    background: #f9fafb;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+/* Image preview improvements */
+img[style*="max-height"] {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+}
+
+/* Improve help text */
+.help {
+    color: #6b7280;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* Modernize date picker */
+.calendarbox, .clockbox {
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Improve select2 (if used) */
+.select2-container {
+    border-radius: 6px;
+}
+
+.select2-container--default .select2-selection--single {
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    height: 38px;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    #changelist-filter {
+        margin-bottom: 20px;
+    }
+    
+    .object-tools {
+        float: none;
+        margin-bottom: 15px;
+    }
+}
+

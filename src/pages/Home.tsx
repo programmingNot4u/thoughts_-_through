@@ -1,13 +1,11 @@
 import FocusWindows from "../components/FocusWindows";
-import Hero from "../components/Hero";
-import OngoingProjects from "../components/OngoingProjects";
+import PromotionalSlider from "../components/PromotionalSlider";
 
 const Home = () => {
   return (
     <>
-      <Hero />
+      <PromotionalSlider />
       <FocusWindows />
-      <OngoingProjects />
     </>
   );
 };

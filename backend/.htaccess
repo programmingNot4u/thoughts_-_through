@@ -1,0 +1,52 @@
+# Django Backend .htaccess for cPanel
+# Place this file in public_html/api/
+
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Handle static files
+RewriteCond %{REQUEST_URI} ^/api/static/
+RewriteRule ^static/(.*)$ /api/backend/staticfiles/$1 [L]
+
+# Handle media files
+RewriteCond %{REQUEST_URI} ^/api/media/
+RewriteRule ^media/(.*)$ /api/backend/media/$1 [L]
+
+# Handle admin and API requests - pass to Django
+RewriteCond %{REQUEST_URI} ^/api/(admin|api)/
+RewriteRule ^(.*)$ /api/backend/$1 [L]
+
+# For Passenger (Python app)
+# If using Passenger, the passenger_wsgi.py will handle routing
+
+# Security: Deny access to sensitive files
+<FilesMatch "^(\.env|\.git|db\.sqlite3|manage\.py)$">
+    Require all denied
+</FilesMatch>
+
+# Deny directory listing
+Options -Indexes
+
+# Set proper MIME types
+<IfModule mod_mime.c>
+    AddType application/json .json
+    AddType application/javascript .js
+    AddType text/css .css
+</IfModule>
+
+# Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Cache static files
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+

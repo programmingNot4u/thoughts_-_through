@@ -1,5 +1,6 @@
 {
   "name": "thoughts_-_through",
+  "homepage": "https://innoendynamics.com ",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -21,6 +22,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "aos": "^2.3.4",
+    "axios": "^1.13.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.5",

@@ -1,0 +1,327 @@
+{% extends "admin/index.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div id="content-main">
+    {% if app_list %}
+        <div class="admin-sections">
+            <!-- About Section -->
+            <div class="admin-section">
+                <h2 class="section-header">
+                    <span class="section-icon">ℹ️</span>
+                    About
+                </h2>
+                <div class="section-description">Manage About page content, sections, and organizational structure</div>
+                <div class="section-grid">
+                    {% for app in app_list %}
+                        {% for model in app.models %}
+                            {% if 'About' in model.name or 'Organizational' in model.name %}
+                                <div class="model-card">
+                                    <a href="{{ model.admin_url }}" class="model-link">
+                                        <div class="model-icon">
+                                            {% if 'Section' in model.name %}📋
+                                            {% elif 'Content' in model.name %}📄
+                                            {% elif 'Organizational' in model.name %}👥
+                                            {% else %}📝{% endif %}
+                                        </div>
+                                        <div class="model-info">
+                                            <h3>{{ model.name|safe }}</h3>
+                                            {% if model.add_url %}
+                                                <a href="{{ model.add_url }}" class="add-link">+ Add</a>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Research Section -->
+            <div class="admin-section">
+                <h2 class="section-header">
+                    <span class="section-icon">🔬</span>
+                    Research
+                </h2>
+                <div class="section-description">Manage research articles, images, tags, and external links</div>
+                <div class="section-grid">
+                    {% for app in app_list %}
+                        {% for model in app.models %}
+                            {% if 'Research' in model.name and 'About' not in model.name %}
+                                <div class="model-card">
+                                    <a href="{{ model.admin_url }}" class="model-link">
+                                        <div class="model-icon">📊</div>
+                                        <div class="model-info">
+                                            <h3>{{ model.name|safe }}</h3>
+                                            {% if model.add_url %}
+                                                <a href="{{ model.add_url }}" class="add-link">+ Add</a>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Surveys Section -->
+            <div class="admin-section">
+                <h2 class="section-header">
+                    <span class="section-icon">📊</span>
+                    Surveys
+                </h2>
+                <div class="section-description">Manage surveys, objectives, tags, and external links</div>
+                <div class="section-grid">
+                    {% for app in app_list %}
+                        {% for model in app.models %}
+                            {% if 'Survey' in model.name %}
+                                <div class="model-card">
+                                    <a href="{{ model.admin_url }}" class="model-link">
+                                        <div class="model-icon">📋</div>
+                                        <div class="model-info">
+                                            <h3>{{ model.name|safe }}</h3>
+                                            {% if model.add_url %}
+                                                <a href="{{ model.add_url }}" class="add-link">+ Add</a>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Media & Content Section -->
+            <div class="admin-section">
+                <h2 class="section-header">
+                    <span class="section-icon">📰</span>
+                    Media & Content
+                </h2>
+                <div class="section-description">Manage media coverage, publications, webinars, and promotional content</div>
+                <div class="section-grid">
+                    {% for app in app_list %}
+                        {% for model in app.models %}
+                            {% if 'Media' in model.name or 'Publication' in model.name or 'Webinar' in model.name or 'Promotional' in model.name %}
+                                <div class="model-card">
+                                    <a href="{{ model.admin_url }}" class="model-link">
+                                        <div class="model-icon">
+                                            {% if 'Media' in model.name %}📰
+                                            {% elif 'Publication' in model.name %}📚
+                                            {% elif 'Webinar' in model.name %}🎥
+                                            {% elif 'Promotional' in model.name %}🎨
+                                            {% else %}📝{% endif %}
+                                        </div>
+                                        <div class="model-info">
+                                            <h3>{{ model.name|safe }}</h3>
+                                            {% if model.add_url %}
+                                                <a href="{{ model.add_url }}" class="add-link">+ Add</a>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Resources Section -->
+            <div class="admin-section">
+                <h2 class="section-header">
+                    <span class="section-icon">👥</span>
+                    Resources & Links
+                </h2>
+                <div class="section-description">Manage resource panel members and relevant links</div>
+                <div class="section-grid">
+                    {% for app in app_list %}
+                        {% for model in app.models %}
+                            {% if 'Resource' in model.name or 'Relevant' in model.name %}
+                                <div class="model-card">
+                                    <a href="{{ model.admin_url }}" class="model-link">
+                                        <div class="model-icon">
+                                            {% if 'Resource' in model.name %}👥
+                                            {% elif 'Relevant' in model.name %}🔗
+                                            {% endif %}
+                                        </div>
+                                        <div class="model-info">
+                                            <h3>{{ model.name|safe }}</h3>
+                                            {% if model.add_url %}
+                                                <a href="{{ model.add_url }}" class="add-link">+ Add</a>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Legal Documents & Contact Section -->
+            <div class="admin-section">
+                <h2 class="section-header">
+                    <span class="section-icon">📄</span>
+                    Legal Documents & Contact
+                </h2>
+                <div class="section-description">Manage legal documents, certifications, and contact page content</div>
+                <div class="section-grid">
+                    {% for app in app_list %}
+                        {% for model in app.models %}
+                            {% if 'Legal' in model.name or 'Contact' in model.name or 'Footer' in model.name %}
+                                <div class="model-card">
+                                    <a href="{{ model.admin_url }}" class="model-link">
+                                        <div class="model-icon">
+                                            {% if 'Legal' in model.name %}📄
+                                            {% elif 'Contact' in model.name %}📧
+                                            {% elif 'Footer' in model.name %}🦶
+                                            {% else %}📝{% endif %}
+                                        </div>
+                                        <div class="model-info">
+                                            <h3>{{ model.name|safe }}</h3>
+                                            {% if model.add_url %}
+                                                <a href="{{ model.add_url }}" class="add-link">+ Add</a>
+                                            {% endif %}
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>{% trans "You don't have permission to view anything." %}</p>
+    {% endif %}
+</div>
+
+<style>
+.admin-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.admin-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.admin-section:hover {
+    box-shadow: 0 4px 16px rgba(28, 124, 84, 0.1);
+}
+
+.section-header {
+    color: #1C7C54;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #1C7C54;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-icon {
+    font-size: 28px;
+}
+
+.section-description {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.section-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.model-card {
+    background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.model-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(28, 124, 84, 0.2);
+    border-color: #1C7C54;
+}
+
+.model-link {
+    display: flex;
+    align-items: center;
+    padding: 18px;
+    text-decoration: none;
+    color: inherit;
+    gap: 15px;
+}
+
+.model-icon {
+    font-size: 36px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1C7C54 0%, #11543A 100%);
+    border-radius: 12px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(28, 124, 84, 0.3);
+}
+
+.model-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.model-info h3 {
+    margin: 0 0 8px 0;
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: 600;
+    word-wrap: break-word;
+}
+
+.add-link {
+    display: inline-block;
+    color: #1C7C54;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #E6F4EC;
+    transition: all 0.2s;
+}
+
+.add-link:hover {
+    background: #1C7C54;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .section-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+        font-size: 20px;
+    }
+}
+</style>
+{% endblock %}

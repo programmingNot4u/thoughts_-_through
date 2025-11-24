@@ -1,76 +1,42 @@
-import { useMemo, useState } from "react";
-
-type DocumentType = "Certificate" | "Audit Report" | "Approval" | "License";
-
-interface LegalDocument {
-  id: string;
-  title: string;
-  year: string;
-  type: DocumentType;
-  description?: string;
-  downloadUrl?: string;
-}
+import { useMemo, useState, useEffect } from "react";
+import { legalDocumentService, type LegalDocument, type DocumentType } from "../services/legalDocumentService";
 
 const LegalDocuments = () => {
-  const documents: LegalDocument[] = [
-    {
-      id: "certificate-incorporation-2020",
-      title: "Certificate of Incorporation",
-      year: "2020",
-      type: "Certificate",
-      description:
-        "Official certificate of incorporation from the Registrar of Joint Stock Companies and Firms",
-    },
-    {
-      id: "tax-registration-2020",
-      title: "Tax Registration Certificate",
-      year: "2020",
-      type: "Certificate",
-      description:
-        "Tax Identification Number (TIN) registration certificate from National Board of Revenue",
-    },
-    {
-      id: "annual-audit-report-2023",
-      title: "Annual Audit Report 2023",
-      year: "2023",
-      type: "Audit Report",
-      description:
-        "Comprehensive annual audit report for fiscal year 2023, prepared by certified auditors",
-    },
-    {
-      id: "annual-audit-report-2022",
-      title: "Annual Audit Report 2022",
-      year: "2022",
-      type: "Audit Report",
-      description:
-        "Comprehensive annual audit report for fiscal year 2022, prepared by certified auditors",
-    },
-    {
-      id: "annual-audit-report-2021",
-      title: "Annual Audit Report 2021",
-      year: "2021",
-      type: "Audit Report",
-      description:
-        "Comprehensive annual audit report for fiscal year 2021, prepared by certified auditors",
-    },
-    {
-      id: "research-ethics-approval-2021",
-      title: "Research Ethics Approval",
-      year: "2021",
-      type: "Approval",
-      description:
-        "Ethics approval certificate for research activities from the Institutional Review Board",
-    },
-  ];
-
+  const [documents, setDocuments] = useState<LegalDocument[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filterYear, setFilterYear] = useState<string>("All");
   const [filterType, setFilterType] = useState<DocumentType | "All">("All");
   const [sortBy, setSortBy] = useState<"year" | "title" | "type">("year");
 
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      try {
+        setLoading(true);
+        const data = await legalDocumentService.getAll();
+        // Ensure data is an array
+        if (Array.isArray(data)) {
+          setDocuments(data);
+        } else {
+          console.error("Legal documents data is not an array:", data);
+          setDocuments([]);
+        }
+      } catch (error) {
+        console.error("Error fetching legal documents:", error);
+        setDocuments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDocuments();
+  }, []);
+
   const years = useMemo(() => {
+    if (!Array.isArray(documents) || documents.length === 0) {
+      return ["All"];
+    }
     const yearSet = new Set(documents.map((doc) => doc.year));
     return ["All", ...Array.from(yearSet).sort().reverse()];
-  }, []);
+  }, [documents]);
 
   const types: DocumentType[] = [
     "Certificate",
@@ -80,9 +46,12 @@ const LegalDocuments = () => {
   ];
 
   const filteredAndSortedDocuments = useMemo(() => {
+    if (!Array.isArray(documents) || documents.length === 0) {
+      return [];
+    }
     let filtered = documents.filter((doc) => {
       const matchesYear = filterYear === "All" || doc.year === filterYear;
-      const matchesType = filterType === "All" || doc.type === filterType;
+      const matchesType = filterType === "All" || doc.document_type === filterType;
       return matchesYear && matchesType;
     });
 
@@ -93,14 +62,14 @@ const LegalDocuments = () => {
       } else if (sortBy === "title") {
         return a.title.localeCompare(b.title);
       } else {
-        const typeCompare = a.type.localeCompare(b.type);
+        const typeCompare = a.document_type.localeCompare(b.document_type);
         if (typeCompare !== 0) return typeCompare;
         return parseInt(b.year) - parseInt(a.year);
       }
     });
 
     return filtered;
-  }, [filterYear, filterType, sortBy]);
+  }, [documents, filterYear, filterType, sortBy]);
 
   const getTypeColor = (type: DocumentType) => {
     switch (type) {
@@ -116,6 +85,18 @@ const LegalDocuments = () => {
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
+
+  if (loading) {
+    return (
+      <section id="documents" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-12">
+            <div className="text-forest-green text-xl">Loading legal documents...</div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="documents" className="py-20 bg-white">
@@ -284,20 +265,22 @@ const LegalDocuments = () => {
                       <td className="px-6 py-4">
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-medium border ${getTypeColor(
-                            doc.type
+                            doc.document_type
                           )}`}>
-                          {doc.type}
+                          {doc.document_type}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        {doc.downloadUrl ? (
+                        {doc.download_url ? (
                           <a
-                            href={doc.downloadUrl}
+                            href={doc.download_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="btn-primary text-sm py-2 px-4 inline-block">
                             Download
                           </a>
                         ) : (
-                          <button className="btn-primary text-sm py-2 px-4">
+                          <button className="btn-primary text-sm py-2 px-4" disabled>
                             Download
                           </button>
                         )}

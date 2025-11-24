@@ -1,12 +1,12 @@
-import { useMemo, useState } from "react";
-import type {
-  PublicationCategory,
-  PublicationSector,
-  PublicationType,
-} from "../data/publications";
-import { publications } from "../data/publications";
+import { useMemo, useState, useEffect } from "react";
+import { publicationService, type Publication, type PublicationCategory, type PublicationSector, type PublicationType } from "../services/publicationService";
 
 const Publications = () => {
+  const [publications, setPublications] = useState<Publication[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<PublicationCategory[]>([]);
+  const [sectors, setSectors] = useState<PublicationSector[]>([]);
+  const [types, setTypes] = useState<PublicationType[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterYear, setFilterYear] = useState<string>("All");
   const [filterCategory, setFilterCategory] = useState<
@@ -18,32 +18,63 @@ const Publications = () => {
   const [filterType, setFilterType] = useState<PublicationType | "All">("All");
   const [sortBy, setSortBy] = useState<"date" | "title" | "category">("date");
 
-  // Extract unique values for filters
-  const years = useMemo(() => {
-    const yearSet = new Set(publications.map((pub) => pub.date.split("-")[0]));
-    return ["All", ...Array.from(yearSet).sort().reverse()];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // Fetch publications and choices in parallel
+        const [publicationsData, choicesData] = await Promise.all([
+          publicationService.getAll(),
+          publicationService.getChoices(),
+        ]);
+        
+        // Set publications
+        if (Array.isArray(publicationsData)) {
+          setPublications(publicationsData);
+        } else {
+          console.error("Publications data is not an array:", publicationsData);
+          setPublications([]);
+        }
+        
+        // Set choices from backend
+        setCategories(choicesData.categories || []);
+        setSectors(choicesData.sectors || []);
+        setTypes(choicesData.types || []);
+      } catch (error) {
+        console.error("Error fetching publications data:", error);
+        setPublications([]);
+        // Set default empty arrays if fetch fails
+        setCategories([]);
+        setSectors([]);
+        setTypes([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
-  const categories: PublicationCategory[] = [
-    "Research Report",
-    "Policy Brief",
-    "Journal Article",
-    "Working Paper",
-    "Case Study",
-    "Methodology",
-    "Annual Report",
-  ];
+  // Extract unique values for filters
+  const years = useMemo(() => {
+    if (!Array.isArray(publications) || publications.length === 0) {
+      return ["All"];
+    }
+    const yearSet = new Set(publications.map((pub) => pub.date.split("-")[0]));
+    return ["All", ...Array.from(yearSet).sort().reverse()];
+  }, [publications]);
 
-  const sectors: PublicationSector[] = [
-    "Health",
-    "Social",
-    "Environment",
-    "Research",
-    "Policy",
-  ];
-  const types: PublicationType[] = ["PDF", "DOCX", "XLSX", "PPTX", "Link"];
+  // Get unique categories from actual publications data
+  const uniqueCategories = useMemo(() => {
+    if (!Array.isArray(publications) || publications.length === 0) {
+      return new Set<string>();
+    }
+    return new Set(publications.map((pub) => pub.category));
+  }, [publications]);
 
   const filteredAndSortedPublications = useMemo(() => {
+    if (!Array.isArray(publications) || publications.length === 0) {
+      return [];
+    }
     let filtered = publications.filter((pub) => {
       const matchesSearch =
         pub.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -52,7 +83,7 @@ const Publications = () => {
           author.toLowerCase().includes(searchQuery.toLowerCase())
         ) ||
         pub.tags.some((tag) =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase())
+          tag.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
       const year = pub.date.split("-")[0];
@@ -87,6 +118,7 @@ const Publications = () => {
 
     return filtered;
   }, [
+    publications,
     searchQuery,
     filterYear,
     filterCategory,
@@ -177,6 +209,18 @@ const Publications = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <section id="publications" className="py-20 bg-light-green">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-12">
+            <div className="text-forest-green text-xl">Loading publications...</div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="publications" className="py-20 bg-light-green">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -196,7 +240,7 @@ const Publications = () => {
           </div>
           <div className="bg-white rounded-lg p-6 shadow-md text-center">
             <div className="text-3xl font-bold text-forest-green mb-2">
-              {categories.length}
+              {uniqueCategories.size}
             </div>
             <div className="text-sm text-medium-gray">Categories</div>
           </div>
@@ -451,7 +495,7 @@ const Publications = () => {
                           <span
                             key={idx}
                             className="px-2 py-1 bg-light-green text-forest-green text-xs rounded">
-                            {tag}
+                            {tag.name}
                           </span>
                         ))}
                         {pub.tags.length > 3 && (
@@ -465,20 +509,32 @@ const Publications = () => {
 
                   {/* Actions */}
                   <div className="flex gap-2 pt-4 border-t border-light-green">
-                    {pub.downloadUrl ? (
+                    {pub.download_url ? (
                       <a
-                        href={pub.downloadUrl}
+                        href={pub.download_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="flex-1 btn-primary text-sm py-2 text-center">
                         Download
                       </a>
                     ) : (
-                      <button className="flex-1 btn-primary text-sm py-2">
+                      <button className="flex-1 btn-primary text-sm py-2" disabled>
                         Download
                       </button>
                     )}
-                    <button className="flex-1 btn-outline text-sm py-2">
-                      Preview
-                    </button>
+                    {(pub.external_url || pub.download_url || pub.file_url) ? (
+                      <a
+                        href={pub.external_url || pub.download_url || pub.file_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 btn-outline text-sm py-2 text-center">
+                        Preview
+                      </a>
+                    ) : (
+                      <button className="flex-1 btn-outline text-sm py-2" disabled>
+                        Preview
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -1,39 +1,39 @@
+import { useEffect, useState } from "react";
+import { aboutService, type AboutPageSection } from "../services/aboutService";
+
 const VisionMission = () => {
-  const sections = [
-    {
-      title: "Vision",
-      items: [
-        "To be a leading research organization that drives evidence-based decision making",
-        "Creating sustainable solutions for global challenges",
-        "Fostering environmental consciousness and social equity",
-      ],
-    },
-    {
-      title: "Mission",
-      items: [
-        "Conduct rigorous surveys and research across health, environment, and social sectors",
-        "Provide consultancy services grounded in data and scientific evidence",
-        "Bridge the gap between research and policy implementation",
-      ],
-    },
-    {
-      title: "Goals",
-      items: [
-        "Advance knowledge in health, mental health, and social well-being",
-        "Address climate change impacts through actionable research",
-        "Promote social justice and reduce inequality",
-      ],
-    },
-    {
-      title: "Objectives",
-      items: [
-        "Publish high-quality research reports and publications",
-        "Collaborate with national and international research institutions",
-        "Provide evidence-based consultancy to governments and organizations",
-        "Build capacity through knowledge sharing and training",
-      ],
-    },
-  ];
+  const [sections, setSections] = useState<AboutPageSection[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        setLoading(true);
+        const data = await aboutService.getSections();
+        setSections(data);
+      } catch (error) {
+        console.error("Error fetching about sections:", error);
+        setSections([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSections();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="about" className="py-20 bg-light-green">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center text-forest-green text-xl">Loading...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (sections.length === 0) {
+    return null;
+  }
 
   return (
     <section id="about" className="py-20 bg-light-green">

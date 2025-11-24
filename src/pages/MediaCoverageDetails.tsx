@@ -1,11 +1,47 @@
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getMediaCoverageById } from "../data/mediaCoverage";
+import { mediaService, type MediaCoverageItem } from "../services/mediaService";
 
 const MediaCoverageDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const item = id ? getMediaCoverageById(id) : null;
+  const [item, setItem] = useState<MediaCoverageItem | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!item) {
+  useEffect(() => {
+    const fetchItem = async () => {
+      if (!id) {
+        setError("No ID provided");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const data = await mediaService.getById(id);
+        setItem(data);
+      } catch (err) {
+        console.error("Error fetching media item:", err);
+        setError("Failed to load article");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItem();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="pt-20 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-forest-green text-xl">Loading article...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !item) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -13,7 +49,7 @@ const MediaCoverageDetails = () => {
             Article Not Found
           </h1>
           <p className="text-medium-gray mb-8">
-            The article you're looking for doesn't exist.
+            {error || "The article you're looking for doesn't exist."}
           </p>
           <Link to="/media-coverage" className="btn-primary">
             Back to Media Coverage
@@ -71,12 +107,12 @@ const MediaCoverageDetails = () => {
         </div>
 
         {/* YouTube Video */}
-        {item.youtubeVideoId && (
+        {item.youtube_video_id && (
           <div className="mb-8">
             <div className="relative w-full pb-[56.25%] h-0 overflow-hidden rounded-lg shadow-lg bg-gray-900">
               <iframe
                 className="absolute top-0 left-0 w-full h-full"
-                src={`https://www.youtube.com/embed/${item.youtubeVideoId}?rel=0&modestbranding=1`}
+                src={`https://www.youtube.com/embed/${item.youtube_video_id}?rel=0&modestbranding=1`}
                 title={item.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -121,7 +157,7 @@ const MediaCoverageDetails = () => {
                 <span
                   key={idx}
                   className="px-4 py-2 bg-light-green text-forest-green rounded-full text-sm font-medium">
-                  {tag}
+                  {tag.name}
                 </span>
               ))}
             </div>
@@ -129,13 +165,13 @@ const MediaCoverageDetails = () => {
         )}
 
         {/* External Links */}
-        {item.externalLinks && item.externalLinks.length > 0 && (
+        {item.external_links && item.external_links.length > 0 && (
           <div className="bg-light-green rounded-lg p-6 mb-8">
             <h3 className="text-xl font-heading font-bold text-dark-gray mb-4">
               Related Links & Resources
             </h3>
             <ul className="space-y-3">
-              {item.externalLinks.map((link, idx) => (
+              {item.external_links.map((link, idx) => (
                 <li key={idx}>
                   <a
                     href={link.url}
@@ -185,5 +221,15 @@ const MediaCoverageDetails = () => {
 };
 
 export default MediaCoverageDetails;
+
+
+
+
+
+
+
+
+
+
 
 

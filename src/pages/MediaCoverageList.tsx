@@ -1,20 +1,50 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import type { MediaType } from "../data/mediaCoverage";
-import { mediaCoverage } from "../data/mediaCoverage";
+import { mediaService, type MediaCoverageItem } from "../services/mediaService";
+import { usePagination } from "../hooks/usePagination";
+import Pagination from "../components/Pagination";
+
+type MediaType = "Article" | "Video" | "News" | "Interview" | "Event";
 
 const MediaCoverageList = () => {
+  const [mediaItems, setMediaItems] = useState<MediaCoverageItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<MediaType | "All">("All");
   const [sortBy, setSortBy] = useState<"date" | "title">("date");
 
+  useEffect(() => {
+    const fetchMedia = async () => {
+      try {
+        setLoading(true);
+        const params: any = {};
+        if (typeFilter !== "All") {
+          params.type = typeFilter;
+        }
+        if (searchQuery) {
+          params.search = searchQuery;
+        }
+        const data = await mediaService.getAll(params);
+        setMediaItems(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error fetching media:", error);
+        setMediaItems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMedia();
+  }, [typeFilter, searchQuery]);
+
   const filteredAndSortedItems = useMemo(() => {
-    let filtered = mediaCoverage.filter((item) => {
+    let filtered = mediaItems.filter((item) => {
+      // Additional client-side filtering if needed
       const matchesSearch =
+        !searchQuery ||
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.tags?.some((tag) =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase())
+          tag.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
       const matchesType = typeFilter === "All" || item.type === typeFilter;
@@ -34,9 +64,21 @@ const MediaCoverageList = () => {
     });
 
     return filtered;
-  }, [searchQuery, typeFilter, sortBy]);
+  }, [mediaItems, searchQuery, typeFilter, sortBy]);
 
-  const getTypeIcon = (type: MediaType) => {
+  const itemsPerPage = 12;
+  const {
+    currentPage,
+    items: paginatedItems,
+    totalCount,
+    totalPages,
+    goToPage,
+  } = usePagination({
+    itemsPerPage,
+    data: filteredAndSortedItems,
+  });
+
+  const getTypeIcon = (type: string) => {
     switch (type) {
       case "Article":
         return "📄";
@@ -53,7 +95,7 @@ const MediaCoverageList = () => {
     }
   };
 
-  const getTypeColor = (type: MediaType) => {
+  const getTypeColor = (type: string) => {
     switch (type) {
       case "Article":
         return "bg-blue-500";
@@ -167,13 +209,16 @@ const MediaCoverageList = () => {
 
           {/* Results Count */}
           <div className="mt-4 text-sm text-medium-gray">
-            Showing {filteredAndSortedItems.length} of {mediaCoverage.length}{" "}
-            articles
+            Showing {paginatedItems.length} of {totalCount} articles
           </div>
         </div>
 
         {/* Articles Grid */}
-        {filteredAndSortedItems.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="text-forest-green text-xl">Loading media coverage...</div>
+          </div>
+        ) : paginatedItems.length === 0 ? (
           <div className="bg-light-green rounded-lg p-12 text-center shadow-md">
             <p className="text-xl text-medium-gray mb-4">
               No articles found matching your criteria.
@@ -188,8 +233,9 @@ const MediaCoverageList = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredAndSortedItems.map((item, index) => (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {paginatedItems.map((item, index) => (
               <Link
                 key={item.id}
                 to={`/media-coverage/${item.id}`}
@@ -230,6 +276,12 @@ const MediaCoverageList = () => {
                         day: "numeric",
                       })}
                     </span>
+                    {item.author && (
+                      <>
+                        <span className="mx-2">•</span>
+                        <span>{item.author}</span>
+                      </>
+                    )}
                   </div>
                   <p className="text-sm text-medium-gray mb-4 line-clamp-3">
                     {item.description}
@@ -240,7 +292,7 @@ const MediaCoverageList = () => {
                         <span
                           key={idx}
                           className="px-2 py-1 bg-light-green text-forest-green rounded-full text-xs">
-                          {tag}
+                          {tag.name}
                         </span>
                       ))}
                     </div>
@@ -266,8 +318,18 @@ const MediaCoverageList = () => {
                   </div>
                 </div>
               </Link>
-            ))}
-          </div>
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+                itemsPerPage={itemsPerPage}
+                totalItems={totalCount}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

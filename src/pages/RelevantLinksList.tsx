@@ -1,51 +1,74 @@
-import { useMemo, useState } from "react";
-import type { LinkCategory } from "../data/relevantLinks";
-import { relevantLinks } from "../data/relevantLinks";
+import { useState, useEffect, useMemo } from "react";
+import { relevantLinkService, type RelevantLink } from "../services/relevantLinkService";
+import { usePagination } from "../hooks/usePagination";
+import Pagination from "../components/Pagination";
+
+type LinkCategory = "National" | "International" | "Government" | "Research" | "NGO" | "Academic";
 
 const RelevantLinksList = () => {
+  const [allLinks, setAllLinks] = useState<RelevantLink[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<LinkCategory | "All">(
-    "All"
-  );
+  const [categoryFilter, setCategoryFilter] = useState<LinkCategory | "All">("All");
   const [sortBy, setSortBy] = useState<"title" | "category">("title");
 
-  const categories: LinkCategory[] = [
-    "National",
-    "International",
-    "Government",
-    "Research",
-    "NGO",
-    "Academic",
-  ];
+  useEffect(() => {
+    const fetchLinks = async () => {
+      try {
+        setLoading(true);
+        const params: any = {};
+        if (categoryFilter !== "All") params.category = categoryFilter;
+        if (searchQuery) params.search = searchQuery;
+        
+        const data = await relevantLinkService.getAll(params);
+        setAllLinks(data);
+      } catch (error) {
+        console.error("Error fetching relevant links:", error);
+        setAllLinks([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLinks();
+  }, [categoryFilter, searchQuery]);
 
-  const filteredAndSortedLinks = useMemo(() => {
-    let filtered = relevantLinks.filter((link) => {
-      const matchesSearch =
-        link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        link.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        link.tags.some((tag) =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
-      const matchesCategory =
-        categoryFilter === "All" || link.category === categoryFilter;
-
-      return matchesSearch && matchesCategory;
+  // Get unique categories from fetched data
+  const categories = useMemo(() => {
+    const cats = new Set<LinkCategory>();
+    allLinks.forEach((link) => {
+      if (link.category) {
+        cats.add(link.category as LinkCategory);
+      }
     });
+    return Array.from(cats).sort();
+  }, [allLinks]);
 
-    // Sort links
-    filtered.sort((a, b) => {
+  // Sort links
+  const sortedLinks = useMemo(() => {
+    const sorted = [...allLinks];
+    sorted.sort((a, b) => {
       if (sortBy === "title") {
         return a.title.localeCompare(b.title);
       } else {
-        const categoryCompare = a.category.localeCompare(b.category);
+        const categoryCompare = (a.category || "").localeCompare(b.category || "");
         if (categoryCompare !== 0) return categoryCompare;
         return a.title.localeCompare(b.title);
       }
     });
+    return sorted;
+  }, [allLinks, sortBy]);
 
-    return filtered;
-  }, [searchQuery, categoryFilter, sortBy]);
+  const itemsPerPage = 12;
+  const {
+    currentPage,
+    items: paginatedLinks,
+    totalCount,
+    totalPages,
+    goToPage,
+  } = usePagination<RelevantLink>({
+    itemsPerPage,
+    data: sortedLinks,
+  });
 
   const getCategoryColor = (category: LinkCategory) => {
     switch (category) {
@@ -163,13 +186,16 @@ const RelevantLinksList = () => {
 
           {/* Results Count */}
           <div className="mt-4 text-sm text-medium-gray">
-            Showing {filteredAndSortedLinks.length} of {relevantLinks.length}{" "}
-            links
+            Showing {paginatedLinks.length} of {totalCount} links
           </div>
         </div>
 
         {/* Links Grid */}
-        {filteredAndSortedLinks.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="text-forest-green text-xl">Loading links...</div>
+          </div>
+        ) : paginatedLinks.length === 0 ? (
           <div className="bg-white rounded-lg p-12 text-center shadow-md">
             <p className="text-xl text-medium-gray mb-4">
               No links found matching your criteria.
@@ -184,70 +210,83 @@ const RelevantLinksList = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredAndSortedLinks.map((link, index) => (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white rounded-lg overflow-hidden shadow-md card-hover"
-                data-aos="fade-up"
-                data-aos-delay={index * 50}>
-                <div className="h-48 bg-gradient-to-br from-forest-green to-deep-green flex items-center justify-center text-6xl text-white relative">
-                  🔗
-                  {/* Category Badge */}
-                  <span
-                    className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(
-                      link.category
-                    )}`}>
-                    {link.category}
-                  </span>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-heading font-bold text-dark-gray mb-3 line-clamp-2">
-                    {link.title}
-                  </h3>
-                  <p className="text-medium-gray text-sm leading-relaxed mb-4 line-clamp-3">
-                    {link.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {link.tags.slice(0, 3).map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 bg-light-green text-forest-green text-xs rounded-full">
-                        {tag}
-                      </span>
-                    ))}
-                    {link.tags.length > 3 && (
-                      <span className="px-2 py-1 bg-light-green text-forest-green text-xs rounded-full">
-                        +{link.tags.length - 3}
-                      </span>
-                    )}
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {paginatedLinks.map((link, index) => (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white rounded-lg overflow-hidden shadow-md card-hover"
+                  data-aos="fade-up"
+                  data-aos-delay={index * 50}>
+                  <div className="h-48 bg-gradient-to-br from-forest-green to-deep-green flex items-center justify-center text-6xl text-white relative">
+                    🔗
+                    {/* Category Badge */}
+                    <span
+                      className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(
+                        link.category as LinkCategory
+                      )}`}>
+                      {link.category}
+                    </span>
                   </div>
-                  <div className="pt-4 border-t border-light-green">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-forest-green font-medium">
-                        Visit Link
-                      </span>
-                      <svg
-                        className="w-5 h-5 text-forest-green"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
+                  <div className="p-6">
+                    <h3 className="text-xl font-heading font-bold text-dark-gray mb-3 line-clamp-2">
+                      {link.title}
+                    </h3>
+                    <p className="text-medium-gray text-sm leading-relaxed mb-4 line-clamp-3">
+                      {link.description}
+                    </p>
+                    {link.tags && link.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {link.tags.slice(0, 3).map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-1 bg-light-green text-forest-green text-xs rounded-full">
+                            {typeof tag === 'string' ? tag : tag.name}
+                          </span>
+                        ))}
+                        {link.tags.length > 3 && (
+                          <span className="px-2 py-1 bg-light-green text-forest-green text-xs rounded-full">
+                            +{link.tags.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <div className="pt-4 border-t border-light-green">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-forest-green font-medium">
+                          Visit Link
+                        </span>
+                        <svg
+                          className="w-5 h-5 text-forest-green"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </a>
-            ))}
-          </div>
+                </a>
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+                itemsPerPage={itemsPerPage}
+                totalItems={totalCount}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
